@@ -17,29 +17,28 @@ class QuotationController extends Controller
             'endDate' => '30-05-2023',
             'JWT_TOKEN' => env('JWT_SECRET')
         ];
-
-        if (!($parameters['JWT_TOKEN'] == env('JWT_SECRET'))) {
+        if (!($request->get('JWT_TOKEN') == env('JWT_SECRET'))) {
             return response()->json(['error' => 'Unauthorized'], 401);
         }
 
         foreach (['age', 'currency_id', 'startDate', 'endDate'] as $parameter) {
-            if (!($parameters[$parameter])) {
+            if (!$request->get($parameter)) {
                 return response()->json(['success' => false, 'errorMessage' => 'Please submit the required parameter: ' . $parameter]);
             }
         }
 
-        if (!in_array($parameters['currency_id'], ['EUR', 'GBP', 'USD'])) {
+        if (!in_array($request->get('currencyId'), ['EUR', 'GBP', 'USD'])) {
             return response()->json(['success' => false, 'errorMessage' => 'The selected currency is not accepted by our system']);
         }
 
         try {
-            $tripStartDate = Carbon::createFromFormat('d-m-Y', $parameters['startDate']);
+            $tripStartDate = Carbon::createFromFormat('d-m-Y', $request->get('startDate'));
         } catch (InvalidFormatException $e) {
             return response()->json(['success' => false, 'errorMessage' => 'The starting date is not a correct date format.']);
         }
 
         try {
-            $tripEndDate = Carbon::createFromFormat('d-m-Y', $parameters['endDate']);
+            $tripEndDate = Carbon::createFromFormat('d-m-Y', $request->get('endDate'));
         } catch (InvalidFormatException $e) {
             return response()->json(['success' => false, 'errorMessage' => 'The ending date is not a correct date format.']);
         }
@@ -51,17 +50,17 @@ class QuotationController extends Controller
         $tripLength = $tripStartDate->diffInDays($tripEndDate) + 1;
         $ageTotalLoad = 0;
 
-        if ($parameters['age'] < 18 || $parameters['age'] > 70) {
-            return response()->json(['success' => false, 'errorMessage' => 'Age ' . $parameters['age'] . ' is out of range 18-70 years']);
+        if ($request->get('age') < 18 || $request->get('age') > 70) {
+            return response()->json(['success' => false, 'errorMessage' => 'Age ' . $request->get('age') . ' is out of range 18-70 years']);
         }
-        if (strval($parameters['age']) !== strval(intval($parameters['age']))) {
-            return response()->json(['success' => false, 'errorMessage' => 'Age ' . $parameters['age'] . ' is not an integer']);
+        if (strval($request->get('age') !== strval(intval($request->get('age')))) {
+            return response()->json(['success' => false, 'errorMessage' => 'Age ' . $request->get('age') . ' is not an integer']);
         }
 
         $quotationId = $_SESSION['quotationId'] ?? 1;
         $_SESSION['quotationId'] = $quotationId + 1;
 
-        $ageTotalLoad += $this->getAgeRate($parameters['age']);
+        $ageTotalLoad += $this->getAgeRate($request->get('age'));
 
         $rate = 3;
 
@@ -71,7 +70,7 @@ class QuotationController extends Controller
             'success' => true,
             'quotation_id' => $quotationId,
             'total' => round($total, 2),
-            'currency_id' => $parameters['currency_id'],
+            'currency_id' => $request->get('currencyId'),
         ]);
     }
 

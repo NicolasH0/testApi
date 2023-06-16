@@ -46,10 +46,10 @@
     $(document).ready(function () {
         $("#form").submit(function (event) {
             var formData = {
-                name: $("#name").val(),
                 email: $("#age").val(),
-                date: $("#date").val(),
-                currency: $("#currency").val(),
+                startDate: $("#startDate").val(),
+                endDate: $("#endDate").val(),
+                currencyId: $("#currency").val(),
             };
             $.ajax({
                 method: "POST",
