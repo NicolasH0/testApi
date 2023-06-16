@@ -53,7 +53,7 @@ class QuotationController extends Controller
         if ($request->get('age') < 18 || $request->get('age') > 70) {
             return response()->json(['success' => false, 'errorMessage' => 'Age ' . $request->get('age') . ' is out of range 18-70 years']);
         }
-        if (strval($request->get('age') !== strval(intval($request->get('age')))) {
+        if (strval($request->get('age') !== strval(intval($request->get('age'))))) {
             return response()->json(['success' => false, 'errorMessage' => 'Age ' . $request->get('age') . ' is not an integer']);
         }
 
