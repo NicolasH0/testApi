@@ -10,13 +10,6 @@ class QuotationController extends Controller
 {
     public function getQuote(Request $request)
     {
-        $parameters = [
-            'age' => 29,
-            'currency_id' => 'EUR',
-            'startDate' => '15-05-2023',
-            'endDate' => '30-05-2023',
-            'JWT_TOKEN' => env('JWT_SECRET')
-        ];
         if (!($request->get('JWT_TOKEN') == env('JWT_SECRET'))) {
             return response()->json(['error' => 'Unauthorized'], 401);
         }
