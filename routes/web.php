@@ -22,7 +22,6 @@ Auth::routes();
 Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
 
 Route::any('/', 'App\Http\Controllers\HomeController@index')->name('index');
-Route::any('/form', 'App\Http\Controllers\FormController@form');
 Route::post('/getQuote', 'App\Http\Controllers\QuotationController@getQuote');
 Route::get('/getQuote', 'App\Http\Controllers\QuotationController@getQuote');
 
